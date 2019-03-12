@@ -25,7 +25,7 @@ $update=file_get_contents($website."/getupdates");
 //send info to telegram
 $arrayupdate=json_decode($update,TRUE);
 $chat_id = $update ['message']['chat']['id'];
-file_get_contents($website."/sendMessage?chat_id=".$chatid."&text=test0");
+//file_get_contents($website."/sendMessage?chat_id=".$chatid."&text=test0");
 //print_r($arrayupdate);
 $end1=end($arrayupdate);
 //print_r( $end1);
@@ -40,12 +40,13 @@ echo $end4."</br>";
 //echo $lastKey;
 $chatid=$arrayupdate["result"][0]["message"]["chat"]["id"];
 echo $chatid;
-//file_get_contents($website."/sendMessage?chat_id=".$chatid."&text=test0");
+file_get_contents($website."/sendMessage?chat_id=".$chatid."&text=test0");
 //echo $end4 ."is id <br>";
 
-/*$con = mysqli_connect("localhost","root","","branch");
+$con = mysqli_connect("localhost","cp35128_mahboobeh","xQypi0pUo7&}","cp35128_branch");
 
-// Check connection
+
+//Check connection
 if (mysqli_connect_errno())
   {
   echo "Failed to connect to MySQL: " . mysqli_connect_error();
@@ -56,7 +57,7 @@ if (mysqli_connect_errno())
 
   echo $row['name'];
   $name=$row['name'];
-file_get_contents($website."/sendMessage?chat_id=".$chatid."&text=".$name);*/
+file_get_contents($website."/sendMessage?chat_id=".$chatid."&text=".$name);
 
 
  ?>
