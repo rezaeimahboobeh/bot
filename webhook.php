@@ -150,15 +150,34 @@ function processMessage($message) {
       // stop now
     //}
   //  else {
-  if($latitude!=null && $longitude!=null){
+  //if($latitude!=null && $longitude!=null){
   //apiRequestWebhook("sendlocation", array('chat_id' => $chat_id, 'latitude' => $latitude , 'longitude' => $longitude));
-    }
+  //  }
   //} else {"/sendlocation?chat_id=".$chatid."&latitude=".$end4["latitude"]."&longitude=".$end4["longitude"]
  //apiRequest("sendlocation", array('chat_id' => $chat_id, "text" => $name , 'latitude' => $wide , 'longitude' => $lenght ));
   //apiRequest("sendlocation", array('chat_id' => $chat_id, "text" => "hello" , 'latitude' => $latitude , 'longitude' => $longitude ));
-    nearestBranch($chat_id,$latitude,$longitude,$text);
+if(($text==="/location")||($latitude!=null && $longitude!=null)){
+  nearestBranch($chat_id,$latitude,$longitude,$text);
+}
+  //  nearestBranch($chat_id,$latitude,$longitude,$text);
+  if ($text === "/about" ) {
+    //apiRequest("sendMessage", array('chat_id' => $chatid, "text" => "بنیاد سعدی مرکز آموزش زبان فارسی به غیر غارسی زبانان است"));
     aboutUs($chat_id,$text);
+ }
+    //aboutUs($chat_id,$text);
     loog($message);
+
+if ($text==="/data") {
+    userData($message);
+}
+  //  userData($message);
+
+if ($text==="/country") {
+  // country($message);
+apiRequest("sendMessage", array('chat_id' => $chat_id, "text" => "نام کشور مورد نظر خود را وارد کنید "));
+}
+  country($message);
+  //apiRequest("sendMessage", array('chat_id' => $chat_id, "text" => "از علامت / برای اجرای دستورات استفاده کنید "));
 
   //text message only  apiRequest("sendMessage", array('chat_id' => $chat_id, "text" => $text ));
       //apiRequest("sendMessage", array('chat_id' => $chat_id, "text" => $latitude ));
@@ -225,15 +244,15 @@ foreach($result as $row) {
     //apiRequest("sendMessage", array('chat_id' => $chatid, "text" => $final ));
     }
   // return $distance;
-  //apiRequest("sendMessage", array('chat_id' => $chatid, "text" => $final ));
-  //apiRequest("sendMessage", array('chat_id' => $chatid, "text" => $finallat ));
+  //apiRequest("sendMessage", array('chat_id' => $chatid, "text" => $latitude ));
+  //apiRequest("sendMessage", array('chat_id' => $chatid, "text" => $longitude ));
   //apiRequest("sendMessage", array('chat_id' => $chatid, "text" => $finallong ));
   apiRequestWebhook("sendlocation", array('chat_id' => $chatid, 'latitude' => $finallat , 'longitude' =>$finallong ));
 //  return $final;
 
 
 }
-elseif($text!=="about us")
+else
   apiRequest("sendMessage", array('chat_id' => $chatid, "text" => "please send location" ));
 //apiRequestWebhook("sendlocation", array('chat_id' => $chat_id, 'latitude' => $latitudeDB , 'longitude' =>$longitudeDB ));
 }
@@ -244,7 +263,7 @@ function aboutUs($chatid,$text)
     'keyboard' => 'about us',
     'one_time_keyboard' => true,
     'resize_keyboard' => true)));*/
-    if ($text === "about us" ) {
+    if ($text === "/about" ) {
       apiRequest("sendMessage", array('chat_id' => $chatid, "text" => "بنیاد سعدی مرکز آموزش زبان فارسی به غیر غارسی زبانان است"));
    }
 
@@ -269,4 +288,55 @@ $text=$message['text'];
     //apiRequest("sendMessage", array('chat_id' => $message['chat']['id'], "text" => $first_name ));
 
 }
+
+function country($message)
+{
+  $count=0;
+  $text=$message['text'];
+  $con = mysqli_connect("localhost","cp35128_bot","botbotbot","cp35128_branch");
+  if (mysqli_connect_errno())
+    {
+    echo "Failed to connect to MySQL: " . mysqli_connect_error();
+    }
+  $sql="SELECT * FROM inforoot join bicountry on inforoot.liveCountryID=bicountry.id";
+$result=mysqli_query($con,$sql);
+foreach ($result as $row) {
+  if ($row['country']==$message['text'])
+    $count++;
+}
+if($count!=0)
+apiRequest("sendMessage", array('chat_id' => $message['chat']['id'], "text" => $count."تعدا کشور"));
+//return $count;
+//if(($text==="/about")||($text==="/data")||($text==="/location"))
+//apiRequest("sendMessage", array('chat_id' => $message['chat']['id'], "text" => "نام کشور مورد نظر خود را وارد کن"));
+
+}
+ function userData($message)
+{
+  $men=0;
+  $women=0;
+  $con = mysqli_connect("localhost","cp35128_bot","botbotbot","cp35128_branch");
+  if (mysqli_connect_errno())
+    {
+    echo "Failed to connect to MySQL: " . mysqli_connect_error();
+    }
+  $sql="SELECT * FROM inforoot";
+$result=mysqli_query($con,$sql);
+foreach ($result as $row) {
+  if($row['sex']==0){
+  $men++;
+  }
+    else
+    $women++;
+}
+$text=$message['text'];
+
+//apiRequest("sendMessage", array('chat_id' => $message['chat']['id'], "text" => $count));
+
+apiRequest("sendMessage", array('chat_id' => $message['chat']['id'], "text" => $women." are women and ".$men."are men" ));
+//apiRequest("sendMessage", array('chat_id' => $message['chat']['id'], "text" => $men." are men" ));
+//apiRequest("sendMessage", array('chat_id' => $message['chat']['id'], "text" => $country));
+  mysqli_close($con);
+}
+
 ?>
